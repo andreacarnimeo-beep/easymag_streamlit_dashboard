@@ -4,3 +4,7 @@
 In alcuni export EasyMag la pivot viene duplicata: compare un secondo header `Operatori/Data` più sotto.
 
 ✅ Questa versione usa **solo la prima tabella**, tagliando tutto ciò che segue la seconda occorrenza di `Operatori/Data`.
+
+
+## v4
+- Nella tab **Operatori** aggiunto confronto multi-operatore (anche reparti diversi) con istogramma totale + stacked per operazione.

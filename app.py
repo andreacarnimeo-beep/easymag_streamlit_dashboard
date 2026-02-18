@@ -310,6 +310,44 @@ with tab_ops:
         st.plotly_chart(px.bar(by_op_op, x="operazione", y="qta", title=f"{sel_op} • Operazioni per tipo"),
                         use_container_width=True)
 
+
+
+    st.divider()
+    st.subheader("Confronto operatori (anche reparti diversi)")
+    st.caption("Seleziona 2 o più operatori per confrontare il totale (e il dettaglio per operazione).")
+
+    all_ops = sorted(filtered["operatore"].unique().tolist())
+    default_sel = all_ops[:3] if len(all_ops) >= 3 else all_ops
+    cmp_ops = st.multiselect("Operatori da confrontare", all_ops, default=default_sel, key="cmp_ops_multi")
+
+    if len(cmp_ops) >= 2:
+        cmp_df = (
+            filtered[filtered["operatore"].isin(cmp_ops)]
+            .groupby(["operatore", "operazione"], as_index=False)["qta"].sum()
+        )
+
+        # Totale per operatore
+        cmp_tot = cmp_df.groupby("operatore", as_index=False)["qta"].sum().sort_values("qta", ascending=False)
+        fig = px.bar(cmp_tot, x="operatore", y="qta", title="Totale operazioni • confronto operatori")
+        st.plotly_chart(fig, use_container_width=True)
+
+        # Breakdown per operazione (stacked)
+        cmp_piv = cmp_df.pivot_table(index="operatore", columns="operazione", values="qta", aggfunc="sum", fill_value=0)
+        cmp_piv = cmp_piv.loc[cmp_tot["operatore"]].reset_index()
+        cmp_long = cmp_piv.melt(id_vars=["operatore"], var_name="operazione", value_name="qta")
+        cmp_long = cmp_long[cmp_long["qta"] > 0]
+
+        fig = px.bar(
+            cmp_long,
+            x="operatore",
+            y="qta",
+            color="operazione",
+            title="Dettaglio per operazione • confronto operatori (stacked)",
+        )
+        st.plotly_chart(fig, use_container_width=True)
+    else:
+        st.info("Seleziona almeno 2 operatori per vedere il confronto.")
+
 with tab_rep:
     st.subheader("Reparti (regola reparto applicata)")
     rep_df = reparto_performance_view(filtered)
