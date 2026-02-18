@@ -1,17 +1,17 @@
-# EasyMag • Warehouse Performance Dashboard (Streamlit)
+# EasyMag • Warehouse Performance Dashboard (Streamlit) — v2
 
-Dashboard Streamlit per accorpare **5 export Excel EasyMag** (uno per operazione) e visualizzare KPI + grafici
+Dashboard Streamlit per accorpare **5 export Excel EasyMag** e visualizzare KPI + grafici
 (istogrammi e torte) delle performance dei magazzinieri.
 
-## Cosa fa
-- Carica più file Excel (giornalieri o mensili).
-- Trasforma le tabelle pivot in formato “long” (data, operatore, quantità, operazione).
-- **Accorpa i codici operatore ignorando maiuscole/minuscole**.
-- Mappa le operazioni nei 3 reparti:
-  - **Sell-In**
-  - **Picking**
-  - **Controllo & Packaging**
-- Dashboard con filtri (date, reparto, operazione) + export Excel.
+## Novità v2 (rispetto alla versione precedente)
+- **Riconoscimento automatico dell’operazione** dal testo nel file:
+  - Riga tipo: `(*) Numero di Operazioni Identificazione da Web.`
+- Regole reparto:
+  - Picking → solo **Prelievi**
+  - Sell‑In → **Identificazioni Web**, **Identificazioni Dirette**, **Depositi RF e Dirette**
+    - **Performance reparto Sell‑In** conteggia **solo Depositi RF e Dirette**
+  - Controllo & Packaging → solo **Chiusura Colli Web**
+- Performance operatori: **sempre tutte e 5 le operazioni**
 
 ## Struttura progetto
 - `app.py` → app Streamlit
@@ -30,9 +30,3 @@ streamlit run app.py
 2. Vai su Streamlit Community Cloud → “New app”
 3. Seleziona la repo, branch e `app.py`
 4. Deploy
-
-## Come usare
-1. Carica i 5 file Excel (uno per ciascuna operazione)
-2. Nella sidebar assegna **file → operazione**
-3. (Opzionale) modifica **operazione → reparto**
-4. Usa filtri e scarica l’Excel con i dati puliti/aggregati
